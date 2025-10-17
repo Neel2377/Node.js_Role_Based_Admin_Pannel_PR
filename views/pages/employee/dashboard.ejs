@@ -2,7 +2,8 @@
 
 <style>
   body {
-    background-color: #f0f2f5;
+    background-color: #eef1f4;
+    font-family: "Inter", sans-serif;
   }
 
   .page-wrapper {
@@ -13,45 +14,80 @@
   h3 {
     color: #2c3e50;
     font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .task-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 1.5rem;
   }
 
   .task-card {
     background-color: #ffffff;
-    border-radius: 15px;
+    border-radius: 16px;
     padding: 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .task-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  }
+
+  .task-header {
+    margin-bottom: 0.5rem;
   }
 
   .task-title {
-    color: #34495e;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #2c3e50;
   }
 
   .task-desc {
     color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .badge {
+    padding: 0.4em 0.75em;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 10px;
+    color: #fff;
+  }
+
+  .priority-low { background-color: #27ae60; }
+  .priority-medium { background-color: #f1c40f; color: #2c3e50; }
+  .priority-high { background-color: #e74c3c; }
+  .status-badge { background-color: #3498db; }
+
+  .deadline {
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .task-actions form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
     margin-bottom: 0.75rem;
-  }
-
-  .badge-priority-low {
-    background-color: #2ecc71;
-  }
-  .badge-priority-medium {
-    background-color: #f1c40f;
-  }
-  .badge-priority-high {
-    background-color: #e74c3c;
-  }
-
-  .badge-status {
-    background-color: #3498db;
   }
 
   .form-select, .form-control {
@@ -62,17 +98,34 @@
     border-radius: 8px;
   }
 
-  ul.comment-list {
-    margin-top: 1rem;
-    padding-left: 0;
+  .comment-list {
     list-style: none;
+    padding-left: 0;
+    margin-top: 0.75rem;
   }
 
-  ul.comment-list li {
+  .comment-list li {
     background-color: #f8f9fa;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem 1rem;
     border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  .comment-list strong {
+    color: #2c3e50;
+  }
+
+  .no-tasks {
+    text-align: center;
+    color: #777;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 576px) {
+    .page-wrapper {
+      padding: 1rem;
+    }
   }
 </style>
 
@@ -80,48 +133,58 @@
   <h3>My Tasks</h3>
 
   <% if (!tasks.length) { %>
-    <p class="text-muted">No tasks assigned yet.</p>
+    <p class="no-tasks">No tasks assigned yet.</p>
   <% } else { %>
-    <% tasks.forEach(task => { 
-      let priorityClass = task.priority === 'High' ? 'badge-priority-high' : 
-                          task.priority === 'Medium' ? 'badge-priority-medium' : 
-                          'badge-priority-low';
-    %>
-      <div class="task-card">
-        <div class="task-title"><%= task.title %></div>
-        <div class="task-desc"><%= task.description %></div>
+    <div class="task-grid">
+      <% tasks.forEach(task => {
+        let priorityClass =
+          task.priority === 'High' ? 'priority-high' :
+          task.priority === 'Medium' ? 'priority-medium' : 'priority-low';
+      %>
 
-        <div class="d-flex gap-3 mb-2 flex-wrap">
-          <span class="badge <%= priorityClass %>"><%= task.priority %></span>
-          <span class="badge badge-status"><%= task.status %></span>
-          <span>Deadline: <%= task.deadline ? task.deadline.toDateString() : 'N/A' %></span>
+        <div class="task-card">
+          <div>
+            <div class="task-header">
+              <div class="task-title"><%= task.title %></div>
+            </div>
+
+            <div class="task-desc"><%= task.description %></div>
+
+            <div class="task-meta">
+              <span class="badge <%= priorityClass %>"><%= task.priority %></span>
+              <span class="badge status-badge"><%= task.status %></span>
+              <span class="deadline">Deadline: <%= task.deadline ? task.deadline.toDateString() : 'N/A' %></span>
+            </div>
+
+            <div class="task-actions">
+              <form action="/employee/update-task/<%= task._id %>" method="POST">
+                <select name="status" class="form-select w-auto">
+                  <option value="Pending" <%= task.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                  <option value="In Progress" <%= task.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+                  <option value="Completed" <%= task.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                </select>
+                <button class="btn btn-primary btn-sm">Update</button>
+              </form>
+
+              <form action="/employee/comment/<%= task._id %>" method="POST">
+                <input type="text" name="comment" class="form-control" placeholder="Add comment..." required>
+                <button class="btn btn-success btn-sm">Add</button>
+              </form>
+            </div>
+
+            <% if (task.comments.length > 0) { %>
+              <ul class="comment-list">
+                <% task.comments.forEach(c => { %>
+                  <li>
+                    <strong><%= c.user?.name || 'User' %>:</strong> <%= c.text %>
+                  </li>
+                <% }) %>
+              </ul>
+            <% } %>
+          </div>
         </div>
-
-        <form action="/employee/update-task/<%= task._id %>" method="POST" class="d-flex gap-2 mb-2">
-          <select name="status" class="form-select w-auto">
-            <option value="Pending" <%= task.status === 'Pending' ? 'selected' : '' %>>Pending</option>
-            <option value="In Progress" <%= task.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
-            <option value="Completed" <%= task.status === 'Completed' ? 'selected' : '' %>>Completed</option>
-          </select>
-          <button class="btn btn-primary btn-sm">Update</button>
-        </form>
-
-        <form action="/employee/comment/<%= task._id %>" method="POST" class="d-flex gap-2 mt-2">
-          <input type="text" name="comment" class="form-control" placeholder="Add comment..." required>
-          <button class="btn btn-success btn-sm">Add</button>
-        </form>
-
-        <% if (task.comments.length > 0) { %>
-          <ul class="comment-list">
-            <% task.comments.forEach(c => { %>
-              <li>
-                <strong><%= c.user?.name || 'User' %>:</strong> <%= c.text %>
-              </li>
-            <% }) %>
-          </ul>
-        <% } %>
-      </div>
-    <% }) %>
+      <% }) %>
+    </div>
   <% } %>
 </div>
 

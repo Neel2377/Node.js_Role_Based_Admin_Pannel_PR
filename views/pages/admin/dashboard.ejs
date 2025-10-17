@@ -1,28 +1,17 @@
 <%- include('../../partials/header', { title: 'Admin Dashboard', user: user }) %>
 
 <style>
-  body {
-    background-color: #f4f5f7;
-  }
-
-  .page-wrapper {
-    padding: 2rem 0;
-    min-height: 100vh;
-  }
-
-  h2 {
-    color: #2c3e50;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
+  body { background-color: #f4f5f7; font-family: "Inter", sans-serif; }
+  .page-wrapper { padding: 2rem 0; min-height: 100vh; }
+  h2 { color: #2c3e50; font-weight: 600; margin-bottom: 1rem; }
 
   /* Dashboard cards */
   .dashboard-card {
-    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 6px 18px rgba(15, 30, 45, 0.06);
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     text-decoration: none;
     color: inherit;
@@ -33,23 +22,19 @@
 
   .dashboard-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 14px 36px rgba(15, 30, 45, 0.12);
+    box-shadow: 0 14px 36px rgba(0,0,0,0.12);
   }
 
-  .dashboard-card .meta {
-    text-align: left;
-  }
-
-  .dashboard-card h3 {
-    font-weight: 600;
-    color: #34495e;
+  .dashboard-card .meta h3 {
     margin: 0 0 0.5rem 0;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    color: #34495e;
+    font-weight: 600;
   }
 
   .dashboard-card .stat {
     font-weight: 700;
-    font-size: 2.25rem;
+    font-size: 2.2rem;
     color: #2d7fc1;
     margin: 0;
   }
@@ -61,25 +46,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(45,127,193,0.08);
+    background: rgba(45,127,193,0.1);
     color: #1f6aa0;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     flex-shrink: 0;
   }
 
-  .dashboard-row {
-    gap: 1.5rem;
-  }
+  .dashboard-row { gap: 1.5rem; display: flex; flex-wrap: wrap; justify-content: center; }
 
   @media (max-width: 991px) {
-    .dashboard-card .icon { width:56px; height:56px; }
+    .dashboard-card .icon { width:56px; height:56px; font-size:1.5rem; }
     .dashboard-card .stat { font-size:1.9rem; }
   }
 
   @media (max-width: 767px) {
-    .dashboard-row { flex-direction: column; }
-    .dashboard-card { justify-content: flex-start; gap:1rem; }
-    .dashboard-card .icon { width:48px; height:48px; }
+    .dashboard-card { flex-direction: row; justify-content: space-between; gap:1rem; }
+    .dashboard-card .icon { width:48px; height:48px; font-size:1.4rem; }
     .dashboard-card .stat { font-size:1.6rem; }
   }
 </style>
@@ -89,12 +71,12 @@
     <h2>Welcome, <%= user.name %></h2>
     <hr style="border-color: #dcdde1;">
 
-    <div class="row dashboard-row text-center mt-5 justify-content-center">
+    <div class="dashboard-row mt-5">
       <div class="col-lg-4 col-md-6 mb-4">
         <a href="/admin/managers" class="dashboard-card d-block">
           <div class="meta">
             <h3>Total Managers</h3>
-            <p class="stat"><%= typeof managerCount !== 'undefined' ? managerCount : 0 %></p>
+            <p class="stat"><%= managerCount || 0 %></p>
           </div>
           <div class="icon" aria-hidden="true">👔</div>
         </a>
@@ -104,7 +86,7 @@
         <a href="/admin/employees" class="dashboard-card d-block">
           <div class="meta">
             <h3>Total Employees</h3>
-            <p class="stat"><%= typeof employeeCount !== 'undefined' ? employeeCount : 0 %></p>
+            <p class="stat"><%= employeeCount || 0 %></p>
           </div>
           <div class="icon" aria-hidden="true">🧑‍💼</div>
         </a>

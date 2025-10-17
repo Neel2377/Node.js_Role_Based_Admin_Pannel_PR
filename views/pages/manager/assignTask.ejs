@@ -2,113 +2,159 @@
 
 <style>
   body {
-    background-color: #f4f5f7;
+    background-color: #f4f6f8;
+    font-family: 'Inter', sans-serif;
   }
 
   .page-wrapper {
     min-height: 100vh;
-    padding: 2rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
   }
 
   .assign-card {
     background-color: #ffffff;
     border-radius: 16px;
-    padding: 2rem;
+    padding: 2rem 2.25rem;
     max-width: 600px;
-    margin: 0 auto;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .assign-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
   }
 
   .assign-card h3 {
     color: #2c3e50;
     font-weight: 600;
     margin-bottom: 1.5rem;
+    text-align: center;
   }
 
-  .form-label {
+  label.form-label {
     font-weight: 500;
     color: #34495e;
+    margin-bottom: 0.4rem;
+    display: block;
   }
 
-  .form-control, .form-select {
-    border-radius: 8px;
-    border: 1px solid #ced4da;
-    padding: 0.5rem 0.75rem;
+  .form-control,
+  .form-select,
+  textarea {
+    border-radius: 10px;
+    border: 1px solid #d0d7de;
+    padding: 0.6rem 0.8rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
 
-  .form-control:focus, .form-select:focus {
+  .form-control:focus,
+  .form-select:focus,
+  textarea:focus {
     border-color: #3498db;
     box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
   }
 
-  .btn {
-    min-width: 120px;
+  textarea {
+    resize: none;
   }
 
-  .btn + .btn {
-    margin-left: 0.5rem;
+  .form-section {
+    margin-bottom: 1.25rem;
+  }
+
+  .btn {
+    min-width: 130px;
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+  }
+
+  .btn-success {
+    background-color: #27ae60;
+    border-color: #27ae60;
+  }
+
+  .btn-success:hover {
+    background-color: #219150;
+  }
+
+  .btn-secondary {
+    background-color: #bdc3c7;
+    border-color: #bdc3c7;
+  }
+
+  .btn-secondary:hover {
+    background-color: #a6acaf;
+  }
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
   }
 
   @media (max-width: 576px) {
-    .btn + .btn {
-      margin-left: 0;
-      margin-top: 0.5rem;
+    .assign-card {
+      padding: 1.5rem;
+    }
+
+    .assign-card h3 {
+      font-size: 1.25rem;
     }
   }
 </style>
 
 <div class="page-wrapper">
-  <div class="container">
-    <div class="assign-card">
-      <h3>Assign Task</h3>
+  <div class="assign-card">
+    <h3>Assign a New Task</h3>
 
-      <form action="/manager/assign-task" method="POST">
-        <div class="mb-3">
-          <label class="form-label">Title</label>
-          <input type="text" name="title" class="form-control" required>
-        </div>
+    <form action="/manager/assign-task" method="POST">
+      <div class="form-section">
+        <label class="form-label">Task Title</label>
+        <input type="text" name="title" class="form-control" placeholder="Enter task title" required>
+      </div>
 
-        <div class="mb-3">
-          <label class="form-label">Description</label>
-          <textarea name="description" class="form-control" rows="3"></textarea>
-        </div>
+      <div class="form-section">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control" rows="3" placeholder="Enter task details..."></textarea>
+      </div>
 
-        <div class="mb-3">
-          <label class="form-label">Priority</label>
-          <select name="priority" class="form-select">
-            <option value="Low">Low</option>
-            <option value="Medium" selected>Medium</option>
-            <option value="High">High</option>
-          </select>
-        </div>
+      <div class="form-section">
+        <label class="form-label">Priority</label>
+        <select name="priority" class="form-select">
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
 
-        <div class="mb-3">
-          <label class="form-label">Deadline</label>
-          <input type="date" name="deadline" class="form-control">
-        </div>
+      <div class="form-section">
+        <label class="form-label">Deadline</label>
+        <input type="date" name="deadline" class="form-control">
+      </div>
 
-        <div class="mb-4">
-          <label class="form-label">Assign To</label>
-          <select name="assignedTo" class="form-select" required>
-            <option value="">Select Employee</option>
-            <% employees.forEach(emp => { %>
-              <option value="<%= emp._id %>"><%= emp.name %> (<%= emp.email %>)</option>
-            <% }) %>
-          </select>
-        </div>
+      <div class="form-section">
+        <label class="form-label">Assign To</label>
+        <select name="assignedTo" class="form-select" required>
+          <option value="">Select Employee</option>
+          <% employees.forEach(emp => { %>
+            <option value="<%= emp._id %>"><%= emp.name %> (<%= emp.email %>)</option>
+          <% }) %>
+        </select>
+      </div>
 
-        <div class="d-flex flex-wrap justify-content-start">
-          <button type="submit" class="btn btn-success">Assign Task</button>
-          <a href="/manager/dashboard" class="btn btn-secondary">Cancel</a>
-        </div>
-      </form>
-    </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success">Assign Task</button>
+        <a href="/manager/dashboard" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
   </div>
 </div>
 

@@ -1,124 +1,151 @@
 <%- include('../../partials/header', { title: 'Manage Employees', user: user }) %>
 
 <style>
-  body {
-    background-color: #f4f5f7;
-  }
+  body { background-color: #f4f5f7; font-family: "Inter", sans-serif; }
+  .page-wrapper { padding: 2rem 0; min-height: 100vh; }
+  h3, h4 { color: #2c3e50; font-weight: 600; }
 
-  .page-wrapper {
-    padding: 2rem 0;
-    min-height: 100vh;
-  }
+  .table-card { background: #fff; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); padding: 1.5rem; }
+  .table-card thead { background: linear-gradient(90deg,#3498db,#2980b9); color: #fff; border-radius: 12px; }
+  .table-card tbody tr:hover { background: #f7fbff; transition: background 0.2s; }
 
-  h3, h4 {
-    color: #2c3e50;
-    font-weight: 600;
-  }
+  .actions .btn { margin-left: 6px; font-size: 0.85rem; }
+  .badge { border-radius: 8px; padding: 0.35em 0.65em; font-size: 0.8rem; }
 
-  table {
-    background-color: #ffffff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  }
+  .toolbar { display:flex; gap:10px; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; }
+  .search-input { max-width:360px; }
 
-  table thead {
-    background-color: #3498db;
-    color: #ffffff;
-  }
+  /* Modal tweaks */
+  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.45); z-index:1050; justify-content:center; align-items:center; }
+  .modal-content { background:#fff; border-radius:12px; padding:1.5rem; max-width:500px; width:100%; box-shadow:0 8px 25px rgba(0,0,0,0.12); }
+  .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+  .modal-footer { display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1rem; }
 
-  table tbody tr:hover {
-    background-color: #ecf0f1;
-  }
-
-  .btn-primary {
-    background-color: #3498db;
-    border-color: #3498db;
-    transition: background-color 0.2s;
-  }
-
-  .btn-primary:hover {
-    background-color: #2980b9;
-    border-color: #2980b9;
-  }
-
-  .btn-danger {
-    background-color: #e74c3c;
-    border-color: #e74c3c;
-  }
-
-  .btn-danger:hover {
-    background-color: #c0392b;
-    border-color: #c0392b;
-  }
-
-  .add-user-form .form-control {
-    border-radius: 8px;
-  }
-
-  .add-user-form button {
-    border-radius: 8px;
-  }
-
-  @media (max-width: 767px) {
-    .add-user-form .row {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+  @media (max-width:767px){
+    .toolbar { flex-direction:column; align-items:stretch; gap:0.75rem; }
+    .search-input { max-width:100%; }
+    .actions .btn { margin-left:0.25rem; margin-top:0.25rem; }
   }
 </style>
 
 <div class="page-wrapper">
   <div class="container-fluid">
-    <!-- Employees Table -->
-    <div class="card shadow-sm p-4 mb-5">
-      <h3>Employees List</h3>
-      <table class="table table-striped mt-3 mb-0">
-        <thead>
-          <tr>
-            <th class="text-white">Name</th>
-            <th class="text-white">Email</th>
-            <th class="text-center text-white">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% employees.forEach(e => { %>
-          <tr>
-            <td><%= e.name %></td>
-            <td><%= e.email %></td>
-            <td class="text-center">
-              <form action="/admin/delete-user/<%= e._id %>" method="get" style="display:inline;">
-                <button class="btn btn-danger btn-sm">Delete</button>
-              </form>
-            </td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
+    <div class="card table-card">
+      <div class="toolbar">
+        <div>
+          <h3 class="mb-0">Employees</h3>
+          <small class="text-muted">Manage employees in the system</small>
+        </div>
+        <div class="d-flex align-items-center">
+          <input id="employeeSearch" type="search" class="form-control search-input" placeholder="Search by name or email">
+          <button id="openAddBtn" class="btn btn-primary ms-2">Add Employee</button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="employeesTable" class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th class="text-center">Role</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% employees.forEach(e => { %>
+            <tr data-name="<%= (e.name || '').toLowerCase() %>" data-email="<%= (e.email || '').toLowerCase() %>">
+              <td><%= e.name %></td>
+              <td><%= e.email %></td>
+              <td class="text-center"><span class="badge bg-secondary text-light">Employee</span></td>
+              <td class="text-center actions">
+                <a href="/admin/edit-user/<%= e._id %>" class="btn btn-sm btn-outline-primary">Edit</a>
+                <form onsubmit="return confirmDelete(event)" action="/admin/delete-user/<%= e._id %>" method="POST" style="display:inline;">
+                  <input type="hidden" name="_method" value="DELETE">
+                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Add Employee Form -->
-    <div class="card shadow-sm p-4">
-      <h4>Add Employee</h4>
-      <form action="/admin/add-user" method="POST" class="add-user-form mt-3">
-        <input type="hidden" name="role" value="employee">
-        <div class="row g-2">
-          <div class="col-md-4">
-            <input type="text" name="name" placeholder="Name" class="form-control" required>
-          </div>
-          <div class="col-md-4">
-            <input type="email" name="email" placeholder="Email" class="form-control" required>
-          </div>
-          <div class="col-md-3">
-            <input type="password" name="password" placeholder="Password" class="form-control" required>
-          </div>
-          <div class="col-md-1">
-            <button class="btn btn-primary w-100">Add</button>
-          </div>
+    <!-- Add Employee Modal -->
+    <div id="addEmployeeModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Employee</h5>
+          <button type="button" class="btn-close" aria-label="Close" id="closeModalBtn"></button>
         </div>
-      </form>
+        <form action="/admin/add-user" method="POST" id="addEmployeeForm">
+          <input type="hidden" name="role" value="employee">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input name="name" type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input name="email" type="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input name="password" type="password" class="form-control" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Add Employee</button>
+          </div>
+        </form>
+      </div>
     </div>
+
+    <div class="text-muted small mt-2">Tip: Use the search box to quickly filter employees. Edit to update details or Delete to remove.</div>
   </div>
 </div>
+
+<script>
+  (function(){
+    const search = document.getElementById('employeeSearch');
+    const table = document.getElementById('employeesTable');
+
+    // Search filter
+    if(search && table){
+      search.addEventListener('input', function(){
+        const q = (this.value || '').trim().toLowerCase();
+        Array.from(table.tBodies[0].rows).forEach(row => {
+          const name = row.getAttribute('data-name') || '';
+          const email = row.getAttribute('data-email') || '';
+          row.style.display = (!q || name.includes(q) || email.includes(q)) ? '' : 'none';
+        });
+      });
+    }
+
+    // Modal show/hide
+    const modal = document.getElementById('addEmployeeModal');
+    const openBtn = document.getElementById('openAddBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const cancelBtn = document.getElementById('cancelModalBtn');
+
+    function showModal(){ modal.style.display = 'flex'; document.body.classList.add('modal-open'); }
+    function hideModal(){ modal.style.display = 'none'; document.body.classList.remove('modal-open'); }
+
+    if(openBtn) openBtn.addEventListener('click', showModal);
+    if(closeBtn) closeBtn.addEventListener('click', hideModal);
+    if(cancelBtn) cancelBtn.addEventListener('click', hideModal);
+    window.addEventListener('click', e => { if(e.target===modal) hideModal(); });
+
+    // Delete confirmation
+    window.confirmDelete = function(event){
+      event.preventDefault();
+      const form = event.target;
+      if(confirm('Are you sure you want to delete this employee? This action cannot be undone.')){
+        form.submit();
+      }
+      return false;
+    };
+  })();
+</script>
 
 <%- include('../../partials/footer') %>

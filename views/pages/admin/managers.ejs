@@ -2,7 +2,8 @@
 
 <style>
   body {
-    background-color: #f4f5f7;
+    background-color: #f0f2f7;
+    font-family: "Inter", sans-serif;
   }
 
   .page-wrapper {
@@ -15,61 +16,84 @@
     font-weight: 600;
   }
 
+  .card {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  }
+
   table {
-    background-color: #ffffff;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   }
 
   table thead {
     background-color: #3498db;
-    color: #ffffff;
+    color: #fff;
   }
 
   table tbody tr:hover {
     background-color: #ecf0f1;
   }
 
+  th, td {
+    padding: 0.75rem 1rem;
+  }
+
+  .btn {
+    border-radius: 8px;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
   .btn-primary {
     background-color: #3498db;
     border-color: #3498db;
     transition: background-color 0.2s;
-    border-radius: 8px;
   }
 
   .btn-primary:hover {
     background-color: #2980b9;
-    border-color: #2980b9;
   }
 
   .btn-danger {
     background-color: #e74c3c;
     border-color: #e74c3c;
-    border-radius: 8px;
   }
 
   .btn-danger:hover {
     background-color: #c0392b;
-    border-color: #c0392b;
   }
 
   .add-manager-form .form-control {
     border-radius: 8px;
   }
 
+  .password-meter {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    margin-top: 4px;
+  }
+
   @media (max-width: 767px) {
     .add-manager-form .row {
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
   }
 </style>
 
 <div class="page-wrapper">
   <div class="container-fluid">
+
     <!-- Managers Table -->
-    <div class="card shadow-sm p-4 mb-5">
+    <div class="card">
       <h3>Managers List</h3>
       <table class="table table-striped mt-3 mb-0">
         <thead>
@@ -80,23 +104,31 @@
           </tr>
         </thead>
         <tbody>
-          <% managers.forEach(m => { %>
-          <tr>
-            <td><%= m.name %></td>
-            <td><%= m.email %></td>
-            <td class="text-center">
-              <form action="/admin/delete-user/<%= m._id %>" method="get" style="display:inline;">
-                <button class="btn btn-danger btn-sm">Delete</button>
-              </form>
-            </td>
-          </tr>
-          <% }) %>
+          <% if (managers && managers.length) { %>
+            <% managers.forEach(m => { %>
+              <tr>
+                <td><%= m.name %></td>
+                <td><%= m.email %></td>
+                <td class="text-center">
+                  <form action="/admin/delete-user/<%= m._id %>" method="get" style="display:inline;" onsubmit="return confirmDelete('<%= m.name.replace(/'/g, "\\'") %>')">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="3" class="text-center py-4 text-muted">
+                No managers yet. Use the form below to add your first manager.
+              </td>
+            </tr>
+          <% } %>
         </tbody>
       </table>
     </div>
 
     <!-- Add Manager Form -->
-    <div class="card shadow-sm p-4">
+    <div class="card">
       <h4>Add Manager</h4>
       <form action="/admin/add-user" method="POST" class="add-manager-form mt-3">
         <input type="hidden" name="role" value="manager">
@@ -107,16 +139,55 @@
           <div class="col-md-4">
             <input type="email" name="email" placeholder="Email" class="form-control" required>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 position-relative">
             <input type="password" name="password" placeholder="Password" class="form-control" required>
+            <div class="password-meter"></div>
           </div>
           <div class="col-md-1">
-            <button class="btn btn-primary w-100">Add</button>
+            <button class="btn btn-primary w-100" disabled>Add</button>
           </div>
         </div>
       </form>
     </div>
+
   </div>
 </div>
 
 <%- include('../../partials/footer') %>
+
+<script>
+  function confirmDelete(name) {
+    return confirm('Delete manager "' + name + '"? This action cannot be undone.');
+  }
+
+  // Password strength meter
+  (function() {
+    const form = document.querySelector('.add-manager-form');
+    if (!form) return;
+
+    const passwordInput = form.querySelector('input[name="password"]');
+    const addButton = form.querySelector('button[type="submit"]');
+    const meter = form.querySelector('.password-meter');
+
+    function scorePassword(pw) {
+      let score = 0;
+      if (!pw) return 0;
+      if (pw.length >= 8) score += 1;
+      if (/[A-Z]/.test(pw)) score += 1;
+      if (/[0-9]/.test(pw)) score += 1;
+      if (/[^A-Za-z0-9]/.test(pw)) score += 1;
+      return score;
+    }
+
+    function updateMeter() {
+      const val = passwordInput.value || '';
+      const score = scorePassword(val);
+      const labels = ['Too weak', 'Weak', 'Okay', 'Good', 'Strong'];
+      meter.textContent = val ? labels[score] + (score < 3 ? ' — use 8+ chars, mix cases/numbers/symbols' : '') : '';
+      addButton.disabled = score < 2;
+    }
+
+    passwordInput.addEventListener('input', updateMeter);
+    updateMeter();
+  })();
+</script>

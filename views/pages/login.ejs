@@ -7,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert/dist/sweetalert.min.js"></script>
   <style>
     body {
-      background: linear-gradient(135deg, #a8edea, #fed6e3); /* soft gradient background */
+      background: linear-gradient(120deg, #89f7fe, #66a6ff);
       height: 100vh;
       display: flex;
       justify-content: center;
@@ -16,73 +16,77 @@
       margin: 0;
     }
 
-    .card {
-      border-radius: 20px;
-      padding: 3rem 2.5rem;
-      background-color: #ffffff;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    .login-card {
+      width: 380px;
+      background-color: #fff;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .card:hover {
+    .login-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.16);
     }
 
     h3 {
+      text-align: center;
       font-weight: 700;
       color: #2c3e50;
-      margin-bottom: 1.5rem;
-      text-align: center;
+      margin-bottom: 2rem;
     }
 
     .form-control {
-      border-radius: 10px;
+      border-radius: 12px;
+      border: 1px solid #d1d8e0;
       padding: 0.75rem;
-      border: 1px solid #ccc;
       transition: all 0.2s;
     }
 
     .form-control:focus {
-      border-color: #6c5ce7;
-      box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.2);
+      border-color: #4e9af1;
+      box-shadow: 0 0 0 0.2rem rgba(78,154,241,0.2);
       outline: none;
     }
 
     .btn-primary {
-      background-color: #6c5ce7;
-      border-color: #6c5ce7;
-      padding: 0.6rem 0;
+      width: 100%;
+      background-color: #4e9af1;
+      border-color: #4e9af1;
       font-weight: 600;
-      border-radius: 10px;
+      border-radius: 12px;
+      padding: 0.65rem 0;
       transition: all 0.2s;
     }
 
     .btn-primary:hover {
-      background-color: #5a4ac9;
-      border-color: #5a4ac9;
+      background-color: #3b7ac6;
+      border-color: #3b7ac6;
     }
 
-    a {
-      color: #6c5ce7;
+    .login-footer {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .login-footer a {
+      color: #4e9af1;
+      font-weight: 600;
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    a:hover {
-      color: #5a4ac9;
-    }
-
-    .text-center span {
-      font-size: 0.95rem;
-      color: #555;
+    .login-footer a:hover {
+      color: #3b7ac6;
     }
   </style>
 </head>
 <body>
-  <div class="card" style="width: 400px;">
+  <div class="login-card">
     <h3>Login</h3>
-
     <form action="/user/login" method="POST">
       <div class="mb-3">
         <input type="email" name="email" class="form-control" placeholder="Email" required>
@@ -90,12 +94,9 @@
       <div class="mb-3">
         <input type="password" name="password" class="form-control" placeholder="Password" required>
       </div>
-      <!-- <div class="mb-3 text-end">
-        <a href="/user/forgot-password">Forgot password?</a>
-      </div> -->
-      <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
-      <div class="text-center">
-        <span>Don't have an account? <a href="/user/signup" class="fw-bold">Sign Up</a></span>
+      <button type="submit" class="btn btn-primary mb-3">Login</button>
+      <div class="login-footer">
+        Don't have an account? <a href="/user/signup">Sign Up</a>
       </div>
     </form>
   </div>
