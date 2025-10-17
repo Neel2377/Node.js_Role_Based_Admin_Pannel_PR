@@ -16,46 +16,71 @@
     margin-bottom: 1rem;
   }
 
+  /* Dashboard cards */
   .dashboard-card {
-    background-color: #ffffff;
-    border-radius: 16px;
-    padding: 2rem 1rem;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 18px rgba(15, 30, 45, 0.06);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
     cursor: pointer;
     text-decoration: none;
     color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    transform: translateY(-6px);
+    box-shadow: 0 14px 36px rgba(15, 30, 45, 0.12);
+  }
+
+  .dashboard-card .meta {
+    text-align: left;
   }
 
   .dashboard-card h3 {
-    font-weight: 500;
+    font-weight: 600;
     color: #34495e;
-    margin-bottom: 1rem;
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
   }
 
-  .dashboard-card h1 {
+  .dashboard-card .stat {
     font-weight: 700;
-    font-size: 3rem;
-    color: #3498db;
+    font-size: 2.25rem;
+    color: #2d7fc1;
+    margin: 0;
+  }
+
+  .dashboard-card .icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(45,127,193,0.08);
+    color: #1f6aa0;
+    font-size: 1.6rem;
+    flex-shrink: 0;
   }
 
   .dashboard-row {
-    gap: 2rem;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 991px) {
+    .dashboard-card .icon { width:56px; height:56px; }
+    .dashboard-card .stat { font-size:1.9rem; }
   }
 
   @media (max-width: 767px) {
-    .dashboard-row {
-      flex-direction: column;
-    }
-
-    .dashboard-card h1 {
-      font-size: 2.5rem;
-    }
+    .dashboard-row { flex-direction: column; }
+    .dashboard-card { justify-content: flex-start; gap:1rem; }
+    .dashboard-card .icon { width:48px; height:48px; }
+    .dashboard-card .stat { font-size:1.6rem; }
   }
 </style>
 
@@ -65,19 +90,26 @@
     <hr style="border-color: #dcdde1;">
 
     <div class="row dashboard-row text-center mt-5 justify-content-center">
-      <div class="col-md-5 mb-4">
+      <div class="col-lg-4 col-md-6 mb-4">
         <a href="/admin/managers" class="dashboard-card d-block">
-          <h3>Total Managers</h3>
-          <h1><%= managerCount %></h1>
+          <div class="meta">
+            <h3>Total Managers</h3>
+            <p class="stat"><%= typeof managerCount !== 'undefined' ? managerCount : 0 %></p>
+          </div>
+          <div class="icon" aria-hidden="true">👔</div>
         </a>
       </div>
 
-      <div class="col-md-5 mb-4">
+      <div class="col-lg-4 col-md-6 mb-4">
         <a href="/admin/employees" class="dashboard-card d-block">
-          <h3>Total Employees</h3>
-          <h1><%= employeeCount %></h1>
+          <div class="meta">
+            <h3>Total Employees</h3>
+            <p class="stat"><%= typeof employeeCount !== 'undefined' ? employeeCount : 0 %></p>
+          </div>
+          <div class="icon" aria-hidden="true">🧑‍💼</div>
         </a>
       </div>
+
     </div>
   </div>
 </div>
