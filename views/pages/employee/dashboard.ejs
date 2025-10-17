@@ -1,0 +1,128 @@
+<%- include('../../partials/header', { user: user }) %>
+
+<style>
+  body {
+    background-color: #f0f2f5;
+  }
+
+  .page-wrapper {
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  h3 {
+    color: #2c3e50;
+    font-weight: 600;
+  }
+
+  .task-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .task-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+  }
+
+  .task-title {
+    color: #34495e;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .task-desc {
+    color: #555;
+    margin-bottom: 0.75rem;
+  }
+
+  .badge-priority-low {
+    background-color: #2ecc71;
+  }
+  .badge-priority-medium {
+    background-color: #f1c40f;
+  }
+  .badge-priority-high {
+    background-color: #e74c3c;
+  }
+
+  .badge-status {
+    background-color: #3498db;
+  }
+
+  .form-select, .form-control {
+    border-radius: 8px;
+  }
+
+  .btn {
+    border-radius: 8px;
+  }
+
+  ul.comment-list {
+    margin-top: 1rem;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  ul.comment-list li {
+    background-color: #f8f9fa;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+  }
+</style>
+
+<div class="page-wrapper">
+  <h3>My Tasks</h3>
+
+  <% if (!tasks.length) { %>
+    <p class="text-muted">No tasks assigned yet.</p>
+  <% } else { %>
+    <% tasks.forEach(task => { 
+      let priorityClass = task.priority === 'High' ? 'badge-priority-high' : 
+                          task.priority === 'Medium' ? 'badge-priority-medium' : 
+                          'badge-priority-low';
+    %>
+      <div class="task-card">
+        <div class="task-title"><%= task.title %></div>
+        <div class="task-desc"><%= task.description %></div>
+
+        <div class="d-flex gap-3 mb-2 flex-wrap">
+          <span class="badge <%= priorityClass %>"><%= task.priority %></span>
+          <span class="badge badge-status"><%= task.status %></span>
+          <span>Deadline: <%= task.deadline ? task.deadline.toDateString() : 'N/A' %></span>
+        </div>
+
+        <form action="/employee/update-task/<%= task._id %>" method="POST" class="d-flex gap-2 mb-2">
+          <select name="status" class="form-select w-auto">
+            <option value="Pending" <%= task.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+            <option value="In Progress" <%= task.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+            <option value="Completed" <%= task.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+          </select>
+          <button class="btn btn-primary btn-sm">Update</button>
+        </form>
+
+        <form action="/employee/comment/<%= task._id %>" method="POST" class="d-flex gap-2 mt-2">
+          <input type="text" name="comment" class="form-control" placeholder="Add comment..." required>
+          <button class="btn btn-success btn-sm">Add</button>
+        </form>
+
+        <% if (task.comments.length > 0) { %>
+          <ul class="comment-list">
+            <% task.comments.forEach(c => { %>
+              <li>
+                <strong><%= c.user?.name || 'User' %>:</strong> <%= c.text %>
+              </li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
+
+<%- include('../../partials/footer') %>

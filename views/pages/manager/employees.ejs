@@ -1,0 +1,100 @@
+<%- include('../../partials/header', { title: 'My Team', user: user }) %>
+
+<style>
+  body {
+    background-color: #f4f5f7;
+  }
+
+  .page-wrapper {
+    padding: 2rem 0;
+  }
+
+  h3, h4 {
+    color: #2c3e50;
+    font-weight: 600;
+  }
+
+  .employee-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    margin-bottom: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .employee-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  }
+
+  .employee-actions .btn {
+    margin-right: 0.3rem;
+    margin-top: 0.3rem;
+  }
+
+  .add-employee-form input {
+    margin-bottom: 0.5rem;
+  }
+
+  .add-employee-form button {
+    margin-top: 0.2rem;
+  }
+
+  @media (max-width: 767px) {
+    .employee-card {
+      padding: 1rem;
+    }
+
+    .add-employee-form .row > div {
+      margin-bottom: 0.5rem;
+    }
+  }
+</style>
+
+<div class="page-wrapper">
+  <div class="container-fluid">
+
+    <h3>My Employees</h3>
+
+    <% if (employees.length === 0) { %>
+      <p class="text-muted mt-3">No employees added yet.</p>
+    <% } %>
+
+    <% employees.forEach(emp => { %>
+      <div class="employee-card d-flex justify-content-between align-items-center">
+        <div>
+          <h5><%= emp.name %></h5>
+          <p class="text-muted mb-0"><%= emp.email %></p>
+        </div>
+        <div class="employee-actions">
+          <form action="/manager/delete-employee/<%= emp._id %>" method="get" style="display:inline;">
+            <button class="btn btn-danger btn-sm">Delete</button>
+          </form>
+          <a href="/manager/assign-task?employeeId=<%= emp._id %>" class="btn btn-success btn-sm">Assign Task</a>
+        </div>
+      </div>
+    <% }) %>
+
+    <h4 class="mt-5">Add Employee</h4>
+    <form action="/manager/add-employee" method="POST" class="mt-3 add-employee-form">
+      <div class="row g-2">
+        <div class="col-md-4 col-sm-12">
+          <input type="text" name="name" placeholder="Name" class="form-control" required>
+        </div>
+        <div class="col-md-4 col-sm-12">
+          <input type="email" name="email" placeholder="Email" class="form-control" required>
+        </div>
+        <div class="col-md-3 col-sm-12">
+          <input type="password" name="password" placeholder="Password" class="form-control" required>
+        </div>
+        <div class="col-md-1 col-sm-12">
+          <button class="btn btn-primary w-100">Add</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,86 @@
+<%- include('../../partials/header', { user: user }) %>
+
+<style>
+  table tbody tr:hover {
+    background-color: #eef3f9;
+    transition: background-color 0.2s;
+  }
+
+  .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(100, 149, 237, 0.25);
+    border-color: #6495ed;
+  }
+
+  .badge {
+    font-size: 0.9rem;
+    padding: 0.4em 0.6em;
+  }
+</style>
+
+<div class="page-wrapper" style="background-color: #f4f5f7; min-height: 100vh; padding: 2rem;">
+  <div class="container-fluid">
+    <h3 class="mb-4" style="color: #2c3e50;">My Tasks</h3>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered align-middle" style="background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+        <thead class="table-light">
+          <tr>
+            <th>Task Title</th>
+            <th>Description</th>
+            <th>Assigned By</th>
+            <th>Status</th>
+            <th>Update</th>
+            <th>Comments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (tasks.length === 0) { %>
+            <tr>
+              <td colspan="6" class="text-center text-muted">No tasks assigned yet.</td>
+            </tr>
+          <% } else { %>
+            <% tasks.forEach(task => { %>
+            <tr>
+              <td><%= task.title %></td>
+              <td><%= task.description %></td>
+              <td><%= task.assignedBy ? task.assignedBy.name : 'N/A' %></td>
+              <td>
+                <span class="badge <%= task.status === 'Completed' ? 'bg-success' : task.status === 'In Progress' ? 'bg-info text-white' : 'bg-warning text-dark' %>">
+                  <%= task.status %>
+                </span>
+              </td>
+
+              <!-- Status Update -->
+              <td>
+                <form action="/employee/update-task/<%= task._id %>" method="POST">
+                  <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="Pending" <%= task.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                    <option value="In Progress" <%= task.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+                    <option value="Completed" <%= task.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                  </select>
+                </form>
+              </td>
+
+              <!-- Comments -->
+              <td>
+                <div style="max-height:150px; overflow-y:auto; padding:0.2rem;">
+                  <% if(task.comments && task.comments.length > 0){ %>
+                    <% task.comments.forEach(c => { %>
+                      <p style="margin-bottom:0.2rem;"><strong><%= c.user ? c.user.name : 'N/A' %>:</strong> <%= c.text %></p>
+                    <% }) %>
+                  <% } else { %>
+                    <p class="text-muted mb-0">No comments yet</p>
+                  <% } %>
+                </div>
+              </td>
+
+            </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

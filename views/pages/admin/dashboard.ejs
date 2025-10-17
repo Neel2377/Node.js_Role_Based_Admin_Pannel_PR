@@ -1,0 +1,85 @@
+<%- include('../../partials/header', { title: 'Admin Dashboard', user: user }) %>
+
+<style>
+  body {
+    background-color: #f4f5f7;
+  }
+
+  .page-wrapper {
+    padding: 2rem 0;
+    min-height: 100vh;
+  }
+
+  h2 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .dashboard-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 2rem 1rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  }
+
+  .dashboard-card h3 {
+    font-weight: 500;
+    color: #34495e;
+    margin-bottom: 1rem;
+  }
+
+  .dashboard-card h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    color: #3498db;
+  }
+
+  .dashboard-row {
+    gap: 2rem;
+  }
+
+  @media (max-width: 767px) {
+    .dashboard-row {
+      flex-direction: column;
+    }
+
+    .dashboard-card h1 {
+      font-size: 2.5rem;
+    }
+  }
+</style>
+
+<div class="page-wrapper">
+  <div class="container-fluid">
+    <h2>Welcome, <%= user.name %></h2>
+    <hr style="border-color: #dcdde1;">
+
+    <div class="row dashboard-row text-center mt-5 justify-content-center">
+      <div class="col-md-5 mb-4">
+        <a href="/admin/managers" class="dashboard-card d-block">
+          <h3>Total Managers</h3>
+          <h1><%= managerCount %></h1>
+        </a>
+      </div>
+
+      <div class="col-md-5 mb-4">
+        <a href="/admin/employees" class="dashboard-card d-block">
+          <h3>Total Employees</h3>
+          <h1><%= employeeCount %></h1>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

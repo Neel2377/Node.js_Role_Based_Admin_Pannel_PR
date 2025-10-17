@@ -1,0 +1,90 @@
+<%- include('../../partials/header', { title: 'Manager Dashboard', user: user }) %>
+
+<style>
+  body {
+    background-color: #f0f2f5;
+  }
+
+  .dashboard-header {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .card-metric {
+    border-radius: 16px;
+    padding: 2rem;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card-metric:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .metric-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+  }
+
+  .metric-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+  }
+
+  .bg-employees { background: linear-gradient(135deg, #3498db, #2980b9); }
+  .bg-tasks { background: linear-gradient(135deg, #e67e22, #d35400); }
+  .bg-pending { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+  .bg-completed { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+
+  @media (max-width: 767px) {
+    .card-metric { margin-bottom: 1rem; }
+  }
+</style>
+
+<div class="page-wrapper" style="min-height: 100vh; padding: 2rem;">
+  <div class="container-fluid">
+    <h2 class="dashboard-header">Welcome, <%= user.name %></h2>
+    <hr style="border-color: #dcdde1;">
+
+    <div class="row mt-4 g-4 text-center">
+      <!-- Total Employees -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card-metric bg-employees">
+          <div class="metric-title fw-bold fs-4">Total Employees</div>
+          <div class="metric-value"><%= employeeCount %></div>
+        </div>
+      </div>
+
+      <!-- Total Tasks -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card-metric bg-tasks">
+          <div class="metric-title fw-bold fs-4">Total Tasks Assigned</div>
+          <div class="metric-value"><%= totalTasks %></div>
+        </div>
+      </div>
+
+      <!-- Pending Tasks -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card-metric bg-pending">
+          <div class="metric-title fw-bold fs-4">Pending Tasks</div>
+          <div class="metric-value"><%= pendingTasks %></div>
+        </div>
+      </div>
+
+      <!-- Completed Tasks -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card-metric bg-completed">
+          <div class="metric-title fw-bold fs-4">Completed Tasks</div>
+          <div class="metric-value"><%= completedTasks %></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

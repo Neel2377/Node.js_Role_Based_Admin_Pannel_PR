@@ -1,0 +1,115 @@
+<%- include('../../partials/header', { user: user }) %>
+
+<style>
+  body {
+    background-color: #f4f5f7;
+  }
+
+  .page-wrapper {
+    min-height: 100vh;
+    padding: 2rem 0;
+  }
+
+  .assign-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .assign-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  }
+
+  .assign-card h3 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    font-weight: 500;
+    color: #34495e;
+  }
+
+  .form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+  }
+
+  .btn {
+    min-width: 120px;
+  }
+
+  .btn + .btn {
+    margin-left: 0.5rem;
+  }
+
+  @media (max-width: 576px) {
+    .btn + .btn {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
+  }
+</style>
+
+<div class="page-wrapper">
+  <div class="container">
+    <div class="assign-card">
+      <h3>Assign Task</h3>
+
+      <form action="/manager/assign-task" method="POST">
+        <div class="mb-3">
+          <label class="form-label">Title</label>
+          <input type="text" name="title" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea name="description" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Priority</label>
+          <select name="priority" class="form-select">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Deadline</label>
+          <input type="date" name="deadline" class="form-control">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Assign To</label>
+          <select name="assignedTo" class="form-select" required>
+            <option value="">Select Employee</option>
+            <% employees.forEach(emp => { %>
+              <option value="<%= emp._id %>"><%= emp.name %> (<%= emp.email %>)</option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-start">
+          <button type="submit" class="btn btn-success">Assign Task</button>
+          <a href="/manager/dashboard" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

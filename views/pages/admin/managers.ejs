@@ -1,0 +1,122 @@
+<%- include('../../partials/header', { title: 'Manage Managers', user: user }) %>
+
+<style>
+  body {
+    background-color: #f4f5f7;
+  }
+
+  .page-wrapper {
+    padding: 2rem 0;
+    min-height: 100vh;
+  }
+
+  h3, h4 {
+    color: #2c3e50;
+    font-weight: 600;
+  }
+
+  table {
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  }
+
+  table thead {
+    background-color: #3498db;
+    color: #ffffff;
+  }
+
+  table tbody tr:hover {
+    background-color: #ecf0f1;
+  }
+
+  .btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+    transition: background-color 0.2s;
+    border-radius: 8px;
+  }
+
+  .btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+  }
+
+  .btn-danger {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+    border-radius: 8px;
+  }
+
+  .btn-danger:hover {
+    background-color: #c0392b;
+    border-color: #c0392b;
+  }
+
+  .add-manager-form .form-control {
+    border-radius: 8px;
+  }
+
+  @media (max-width: 767px) {
+    .add-manager-form .row {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+</style>
+
+<div class="page-wrapper">
+  <div class="container-fluid">
+    <!-- Managers Table -->
+    <div class="card shadow-sm p-4 mb-5">
+      <h3>Managers List</h3>
+      <table class="table table-striped mt-3 mb-0">
+        <thead>
+          <tr>
+            <th class="text-white">Name</th>
+            <th class="text-white">Email</th>
+            <th class="text-center text-white">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% managers.forEach(m => { %>
+          <tr>
+            <td><%= m.name %></td>
+            <td><%= m.email %></td>
+            <td class="text-center">
+              <form action="/admin/delete-user/<%= m._id %>" method="get" style="display:inline;">
+                <button class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Add Manager Form -->
+    <div class="card shadow-sm p-4">
+      <h4>Add Manager</h4>
+      <form action="/admin/add-user" method="POST" class="add-manager-form mt-3">
+        <input type="hidden" name="role" value="manager">
+        <div class="row g-2">
+          <div class="col-md-4">
+            <input type="text" name="name" placeholder="Name" class="form-control" required>
+          </div>
+          <div class="col-md-4">
+            <input type="email" name="email" placeholder="Email" class="form-control" required>
+          </div>
+          <div class="col-md-3">
+            <input type="password" name="password" placeholder="Password" class="form-control" required>
+          </div>
+          <div class="col-md-1">
+            <button class="btn btn-primary w-100">Add</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>
